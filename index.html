@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Manager</title>
+</head>
+
+<body class="min-h-screen grid grid-rows-layout">
+  <header class="flex justify-between items-center pl-8 pr-8 bg-blue-900 h-16">
+    <img src="/task.png" class="logo" alt="Task Manager Logo">
+    <nav class="text-white">
+      <ul class="nav flex gap-4">
+        <li data-id="showTask" class="cursor-pointer hover:text-gray-200">Ver tarefas</li>
+        <li data-id="createTask" class="cursor-pointer hover:text-gray-200">Criar tarefa</li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container mx-auto px-4" id="main"></main>
+
+  <footer class="flex items-center justify-center pl-8 pr-8 bg-blue-900 py-2">
+    <p class="text-white text-center">&copy; Task Manager - Todos os direito reservados.</p>
+  </footer>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>
