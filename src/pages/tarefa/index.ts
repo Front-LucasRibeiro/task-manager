@@ -46,7 +46,7 @@ export default class CreateTaskPage {
     const mainElement = document.getElementById('main');
 
     mainElement!.innerHTML = `
-      <section class="max-w-2xl mx-auto form-task mt-12 mb-12">
+      <section class="max-w-2xl mx-auto form-task my-12">
         <h2 class="text-2xl mb-5 text-center">Criar tarefa</h2>
 
         <form id="formCreateTask">
