@@ -7,11 +7,11 @@ import { TasksModule } from './tasks/tasks.module';
     TypeOrmModule.forRootAsync({
       useFactory: async () => ({
         type: 'postgres',
-        host: 'localhost',
-        port: 5432,
-        username: 'postgres',
-        password: 'fr0nt3nd2019',
-        database: 'task_manager',
+        host: process.env.HOST,
+        port: Number(process.env.PORT),
+        database: process.env.DATABASE,
+        username: process.env.USERNAME,
+        password: process.env.PASSWORD,
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         migrations: [__dirname + '/migrations/*{.ts,.js}'],
         autoLoadEntities: true,
