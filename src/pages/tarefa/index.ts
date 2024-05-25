@@ -17,7 +17,8 @@ export default class CreateTaskPage {
         title: formData.get('title'),
         description: formData.get('description'),
         responsible: formData.get('responsible'),
-        status: 'Iniciar',
+        status: 'Fila',
+        time: '00:00:00',
         attachments: formData.get('attachments')
       };  
   
