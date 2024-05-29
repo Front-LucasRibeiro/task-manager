@@ -1,9 +1,12 @@
 export interface ITask {
-  id: number;
+  id?: number;
   title: string;
-  description?: string;
+  description: string;
   responsible: string;
   status: string;
   time: string;
-  attachments: Uint8Array; // dados binarios
+}
+
+export interface IUploadResponse {
+  response: string[];
 }

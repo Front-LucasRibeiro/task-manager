@@ -1,12 +1,14 @@
 import { ITask } from "../../interfaces";
+import ServiceTask from "../../services/tasksService";
 import { Counter } from "./counter";
 
 export default class ListPage {
+  private service = new ServiceTask();
   public counters: Map<string, Counter> = new Map();
 
   constructor(route: string) {
     window.history.pushState(null, '', route);
-
+  
     this.render();
     this.getTasks();
   } 
@@ -45,9 +47,33 @@ export default class ListPage {
         if (target.value === 'Pausar') {
           target.classList.remove('bg-blue-500');
           target.classList.add('bg-orange-400');
-          counter.pauseTimer();
+          counter.pauseTimer(); ''
+          
+          const url = `http://localhost:3000/tasks/${taskId}/time`;
+          const data = {
+            status: 'Pausado',
+            time: totalTime.innerHTML
+          };
 
-          // salvar totalSum no banco de dados: 
+          const options = {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+          };
+
+          fetch(url, options)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Erro na requisição');
+              }
+              return response.json();
+            })
+            .then(responseData => {
+              console.log('Sucesso:', responseData);
+            })
+            .catch(error => {
+              console.error('Erro:', error);
+            });
 
         } else if (target.value === 'Finalizar') {
           target.classList.remove('bg-blue-500');
@@ -60,15 +86,13 @@ export default class ListPage {
   }
 
 
-  getTasks() {
-    fetch('http://localhost:3000/tasks')
-      .then(res => res.json())
-      .then(data => {
-        const tbody = document.querySelector('#tableListTasks tbody');
-        let html = '';
+  async getTasks() {
+    const tasks = await this.service.list();
+    const tbody = document.querySelector('#tableListTasks tbody');
+    let html = '';
 
-        data.forEach((task: ITask) => {
-          html += `
+    tasks.forEach((task: ITask) => {
+      html += `
             <tr data-id="task-${task.id}">
               <td class="py-2 px-4 border">${task.title}</td>
               <td class="py-2 px-4 border">${task.description}</td>
@@ -81,19 +105,14 @@ export default class ListPage {
                   <option value="Finalizar">Finalizado</option>
                 </select>
               </td>
-              <td class="py-2 px-4 border"><span data-id="task-time-${task.id}">${task.time}</span></td>
+              <td class="py-2 px-4 border"><span data-id="task-time-${task.id}">00:00:00</span></td>
               <td class="py-2 px-4 border"><span  data-id="task-time-total-${task.id}">${task.time}</span></td>
             </tr>
           `;
-        })
+    })
 
-        tbody!.innerHTML = html;
-
-        this.changeStatus();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+    tbody!.innerHTML = html;
+    this.changeStatus();
   }
 
   render() {

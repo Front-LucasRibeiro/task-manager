@@ -1,47 +1,61 @@
+import ServiceTask from "../../services/tasksService";
+
 export default class CreateTaskPage {
+  private service = new ServiceTask();
+
   constructor(route: string) {
     window.history.pushState(null, '', route);
 
     this.render();
-    this.create();
+    this.createTask();
   }
 
-  create() {
-    document.getElementById('btnCreateTask')?.addEventListener('click', function (e) {
+  async uploadFiles() {
+    const selectedFileElement = document.getElementById('attachments') as HTMLInputElement;
+
+    if (selectedFileElement.files && selectedFileElement.files?.length > 0) {
+      const files: FileList = selectedFileElement.files;
+
+      const resp = await this.service.upload(files)
+      return resp;
+    }
+  }
+
+
+  async createTask() {
+    document.getElementById('btnCreateTask')?.addEventListener('click', async (e) => {
       e.preventDefault();
+
+      const uploadSuccess = await this.uploadFiles()
+
+      if (uploadSuccess?.response?.[0] === 'error') {
+        alert('Houve um erro ao realizar o upload dos arquivos')
+      }
 
       const form = document.getElementById('formCreateTask') as HTMLFormElement;
       const formData = new FormData(form);
 
+      const title = formData.get('title') as string;
+      const description = formData.get('description') as string;
+      const responsible = formData.get('responsible') as string;
+
       const postData = {
-        title: formData.get('title'),
-        description: formData.get('description'),
-        responsible: formData.get('responsible'),
+        title,
+        description,
+        responsible,
         status: 'Fila',
         time: '00:00:00',
-        attachments: formData.get('attachments')
-      };  
-  
-      fetch('http://localhost:3000/tasks', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(postData) 
-      })
-        .then(res => res.json())
-        .then(() => {
+      };
 
-          ['responsible', 'title', 'description', 'attachments'].forEach(field => {
-            let elem = document.getElementById(field) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
-            elem.value = '';
-          });
-        
-          alert('Cadastro realizado com sucesso');
-        })
-        .catch(error => {
-          console.error('Erro:', error);
-        });
-    })
+      const res = await this.service.create(postData);
+
+      if (res) {
+        alert('Tarefa criada com sucesso!');
+      }
+    });
   }
+
+
 
   render() {
     const mainElement = document.getElementById('main');

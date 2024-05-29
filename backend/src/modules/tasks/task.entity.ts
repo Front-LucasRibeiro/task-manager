@@ -8,13 +8,13 @@ export class Task {
   @Column({ length: 100 })
   title: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text' })
   description: string;
 
   @Column({ type: 'bytea', nullable: true })
   attachments: Uint8Array;
 
-  @Column({ nullable: true, length: 40 })
+  @Column({ length: 40 })
   responsible: string;
 
   @Column({ length: 15 })
